@@ -70,6 +70,8 @@ class App extends Component {
 
   render() {
     let todoView = [];
+    const itemLeft = this.state.todos.filter(todo => (
+      !todo.completed)).length;
 
     switch (this.state.showParam) {
       case 'active':
@@ -98,6 +100,7 @@ class App extends Component {
               <section className="main">
                 <input
                   onClick={this.toggleCompleteAll}
+                  checked={!itemLeft}
                   type="checkbox"
                   id="toggle-all"
                   className="toggle-all"
@@ -112,8 +115,7 @@ class App extends Component {
 
               <footer className="footer">
                 <span className="todo-count">
-                  {this.state.todos.filter(todo => (
-                    !todo.completed)).length}
+                  {itemLeft}
                   item left
                 </span>
                 <TodosFilter updateTodosToShow={this.updateTodosToShow} />
