@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { TodoList } from './components/TodoList/TodoList';
+import TodoList from './components/TodoList/TodoList';
 import NewTodo from './components/NewTodo/NewTodo';
 import { TodosFilter } from './components/TodosFilter/TodosFilter';
 
@@ -25,6 +25,35 @@ class App extends Component {
         todo.id !== id
       )),
     }));
+  }
+
+  handleDobleClick = ({ id }) => {
+    this.setState(prevState => ({
+      todos: prevState.todos.map(todo => (
+        (todo.id !== id) ? ({
+          ...todo, editing: false,
+        }) : ({
+          ...todo, editing: true,
+        })
+      )),
+    }));
+  }
+
+  editTodo = (content) => {
+    if (content) {
+      this.setState(prevState => ({
+        todos: prevState.todos.map(todo => (
+          (todo.editing) ? ({
+            ...todo, content,
+          }) : todo)),
+      }));
+    } else {
+      this.setState(prevState => ({
+        todos: prevState.todos.filter(todo => (
+          !todo.editing
+        )),
+      }));
+    }
   }
 
   handleRemuveCompleted = () => {
@@ -107,6 +136,8 @@ class App extends Component {
                   todos={todoView}
                   remuve={this.handleRemuve}
                   toggleComplete={this.toggleComplete}
+                  handleDobleClick={this.handleDobleClick}
+                  editTodo={this.editTodo}
                 />
               </section>
 
