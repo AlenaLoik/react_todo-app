@@ -5,8 +5,6 @@ import PropTypes from 'prop-types';
 class NewTodo extends Component {
   state = {
     content: '',
-    id: 1,
-    completed: false,
   }
 
   handleChange = (event) => {
@@ -17,13 +15,18 @@ class NewTodo extends Component {
 
   handleSubmit = (e) => {
     e.preventDefault();
+    const { content } = this.state;
+    const id = +Date.now();
+    const completed = false;
+    const todo = {
+      content, id, completed,
+    };
 
-    if (this.state.content) {
-      this.props.addTodo(this.state);
+    if (content) {
+      this.props.addTodo(todo);
 
       this.setState(prevState => ({
         content: '',
-        id: prevState.id + 1,
       }));
     }
   }

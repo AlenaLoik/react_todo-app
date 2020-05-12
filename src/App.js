@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import TodoList from './components/TodoList/TodoList';
-import NewTodo from './components/NewTodo/NewTodo';
-import { TodosFilter } from './components/TodosFilter/TodosFilter';
+import { Footer } from './components/Footer/Footer';
+import { Header } from './components/Header/Header';
 
 class App extends Component {
   state = {
@@ -19,7 +19,7 @@ class App extends Component {
     this.setState({ showParam: todoToShow });
   }
 
-  handleRemuve = (id) => {
+  handleRemove = (id) => {
     this.setState(prevState => ({
       todos: prevState.todos.filter(todo => (
         todo.id !== id
@@ -56,7 +56,7 @@ class App extends Component {
     }
   }
 
-  handleRemuveCompleted = () => {
+  handleRemoveCompleted = () => {
     this.setState(prevState => ({
       todos: prevState.todos.filter(todo => (
         !todo.completed
@@ -97,36 +97,44 @@ class App extends Component {
     }
   }
 
-  render() {
+  getTodos = (status) => {
     let todoView = [];
+    const { todos } = this.state;
 
-    switch (this.state.showParam) {
+    switch (status) {
       case 'active':
-        todoView = [...this.state.todos].filter(todo => (
+        todoView = todos.filter(todo => (
           !todo.completed
         ));
         break;
       case 'completed':
-        todoView = [...this.state.todos].filter(todo => (
+        todoView = todos.filter(todo => (
           todo.completed
         ));
         break;
       default:
-        todoView = [...this.state.todos];
+        todoView = todos;
     }
+
+    return todoView;
+  }
+
+  render() {
+    const { todos, showParam } = this.state;
+    const todoView = this.getTodos(showParam);
+    const itemLeft = todos.filter(todo => (
+      !todo.completed)).length;
 
     return (
       <section className="todoapp">
-        <header className="header">
-          <h1>todos</h1>
-          <NewTodo addTodo={this.addTodo} />
-        </header>
-        {(this.state.todos.length)
+        <Header addTodo={this.addTodo} />
+        {(todos.length)
           ? (
             <>
               <section className="main">
                 <input
                   onClick={this.toggleCompleteAll}
+                  checked={!itemLeft}
                   type="checkbox"
                   id="toggle-all"
                   className="toggle-all"
@@ -134,35 +142,18 @@ class App extends Component {
                 <label htmlFor="toggle-all">Mark all as complete</label>
                 <TodoList
                   todos={todoView}
-                  remuve={this.handleRemuve}
+                  remove={this.handleRemove}
                   toggleComplete={this.toggleComplete}
                   handleDobleClick={this.handleDobleClick}
                   editTodo={this.editTodo}
                 />
               </section>
-
-              <footer className="footer">
-                <span className="todo-count">
-                  {this.state.todos.filter(todo => (
-                    !todo.completed)).length}
-                  item left
-                </span>
-                <TodosFilter updateTodosToShow={this.updateTodosToShow} />
-                {
-                  (this.state.todos.filter(todo => (
-                    todo.completed)).length)
-                    ? (
-                      <button
-                        onClick={this.handleRemuveCompleted}
-                        type="button"
-                        className="clear-completed"
-                      >
-                        Clear completed
-                      </button>
-                    )
-                    : ('')
-                }
-              </footer>
+              <Footer
+                itemLeft={itemLeft}
+                todos={todos}
+                updateTodosToShow={this.updateTodosToShow}
+                handleRemoveCompleted={this.handleRemoveCompleted}
+              />
             </>
           ) : ''}
       </section>

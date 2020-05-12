@@ -21,6 +21,14 @@ class TodoList extends Component {
     });
   }
 
+  handleEdit = (todo) => {
+    this.props.handleDobleClick(todo);
+    this.setState(() => ({
+      content: todo.content,
+      submitEditing: true,
+    }));
+  }
+
   render() {
     return (
       <ul className="todo-list">
@@ -30,13 +38,8 @@ class TodoList extends Component {
             className={(todo.editing && this.state.submitEditing)
               ? 'editing' : ''}
           >
-            <form
-              onSubmit={this.handleSubmit}
-            >
-              <div
-                className={todo.completed ? 'completed' : 'view'}
-
-              >
+            <form onSubmit={this.handleSubmit}>
+              <div className={todo.completed ? 'completed' : 'view'}>
                 <input
                   onClick={() => {
                     this.props.toggleComplete(todo.id);
@@ -49,24 +52,19 @@ class TodoList extends Component {
                 <label
                   htmlFor={`edit-${todo.id}`}
                   onDoubleClick={() => {
-                    this.props.handleDobleClick(todo);
-                    this.setState(() => ({
-                      content: todo.content,
-                      submitEditing: true,
-                    }));
+                    this.handleEdit(todo);
                   }}
                 >
                   {todo.content}
                 </label>
                 <button
                   onClick={() => {
-                    this.props.remuve(todo.id);
+                    this.props.remove(todo.id);
                   }}
                   type="button"
                   className="destroy"
                 />
               </div>
-
               <input
                 type="text"
                 className="edit"
@@ -99,7 +97,7 @@ TodoList.propTypes = {
       completed: PropTypes.bool.isRequired,
     }),
   ).isRequired,
-  remuve: PropTypes.func.isRequired,
+  remove: PropTypes.func.isRequired,
   toggleComplete: PropTypes.func.isRequired,
   handleDobleClick: PropTypes.func.isRequired,
   editTodo: PropTypes.func.isRequired,
